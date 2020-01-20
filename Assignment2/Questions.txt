@@ -1,0 +1,5 @@
+Take a Lena image and convert it into grayscale. 
+Add three different types of noises(salt and pepper, additive Gaussian noise, speckle), 
+each noise in the sets of 5,10,15,20,25,30. 
+Take average for each set and display the average images. 
+Report the observation made.
