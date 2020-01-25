@@ -1,18 +1,20 @@
 '''
 Take a Lena image and convert it into grayscale. 
 Add three different types of noises(salt and pepper, additive Gaussian noise, speckle), 
-each noise in the sets of 5,10,15,20,25,30. 
 Take average for each set and display the average images. 
 Report the observation made.
 '''
 import cv2
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 def rgb2gray(I):
+    I = I.astype(int)
     r, g, b = I[:,:,0], I[:,:,1], I[:,:,2]
-    gray = (0.2989 * r + 0.5870 * g + 0.1140 * b)
-    return gray
+    #gray = (0.2989 * r + 0.5870 * g + 0.1140 * b)
+    gray = (1 * r + 1 * g + 1 * b) / 3
+    return gray.astype(np.uint8)
 
 def SaltPepperNoise(I, prob):
     max = 255
@@ -22,7 +24,8 @@ def SaltPepperNoise(I, prob):
     if I_g.ndim == 2:
         for i in range(I_g.shape[0]):
             for j in range(I_g.shape[1]):
-                r = random.randint(1, 100)
+                r = random.randrange(1, 100)
+                #r = random.randint(1, 100)
                 if r <= probpercent:
                     if r <= int(probpercent / 2):
                         I_g[i, j] = max # Salt
@@ -32,7 +35,8 @@ def SaltPepperNoise(I, prob):
     elif I_g.ndim == 3:
         for i in range(I_g.shape[0]):
             for j in range(I_g.shape[1]):
-                r = random.randint(1, 100)
+                r = random.randrange(1, 100)
+                #r = random.randint(1, 100)
                 if r <= probpercent:
                     if r <= int(probpercent / 2):
                         I_g[i, j, 0] = max # Salt
@@ -92,12 +96,12 @@ def SpeckleNoise(I):
     return I_g
 
 def ImgAverage(Is):
-    AvgI = Is[0]
-    for i in range(len(Is)):
-        if i != 0:
-            AvgI += Is[i]
-    print('\n\nAVG: ' + str(AvgI) + '\n\n')
-    AvgI = AvgI / len(Is)
+    AvgI = Is[0].astype(int)
+    for imgindex in range(len(Is)):
+        if imgindex != 0:
+            Is[imgindex] = Is[imgindex].astype(int)
+            AvgI = (cv2.add(AvgI, Is[imgindex]) / len(Is)).astype(int)
+    AvgI = AvgI.astype(np.uint8)
     return AvgI
 
     
@@ -106,34 +110,76 @@ def ImgAverage(Is):
 # Read and Display Lena Image
 imgpath = 'E:/Github Codes and Projects/ImageProcessing_Files/Assignment2/LenaImage.png'
 I = cv2.imread(imgpath)
-cv2.imshow('Original Image', I)
-#cv2.waitKey()
 
-# Convert to GreyScale
-I_GreyScale = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
-#cv2.imshow('GreyScale Image CV2', I_GreyScale)
-# I_GreyScale_Func = rgb2gray(I)
-# cv2.imshow('GreyScale', I_GreyScale_Func)
+it = 3
+prob = 0.1
+mean = 100
+SD = 50
 
-# Add Salt and Pepper Noise
-I_SPNoise = SaltPepperNoise(I, 0.1)
-#cv2.imshow('Salt and Pepper 0.1', I_SPNoise)
+while True:
 
-# Add Additive Gaussian Noise
-I_GNoise = GaussianNoise(I, 10, 5)
-#cv2.imshow('Gaussian Mean 10 Var 5', I_GNoise)
+    choice = input("Enter choice: ")
 
-# Add Speckle Noise
-I_SNoise = SpeckleNoise(I)
-#cv2.imshow('Speckle', I_SNoise)
+    if choice in ['g', 'gray', 'grey']:
+        # Convert to GreyScale
+        I_GreyScale = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
+        #cv2.imshow('GreyScale Image CV2', I_GreyScale)
+        I_GreyScale_Func = rgb2gray(I)
+        #cv2.imshow('GreyScale', I_GreyScale_Func)
+        I_app = np.concatenate((I_GreyScale, I_GreyScale_Func), axis=1)
+        cv2.imshow("I_APP", I_app)
 
-# Average
-Is = [I, I]
-I_Avg = ImgAverage(Is)
-cv2.imshow('Average', I_Avg)
-print(I)
-print('\n\n\n')
-print(I_Avg)
+    elif choice in ['sp', 'saltandpepper', 'SP']:
+        Is = []
+        plt.title("Salt and Pepper")
+        for i in range(it):
+            I_copy = I.copy()
+            I_SPNoise = SaltPepperNoise(I_copy, prob)
+            I_SPNoise = cv2.cvtColor(I_SPNoise, cv2.COLOR_BGR2RGB)
+            plt.subplot(2, it, i+1)
+            plt.imshow(I_SPNoise)
+            Is.append(I_SPNoise)
+            del I_copy
+        I_Avg = ImgAverage(Is)
+        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
+        plt.subplot(2, it, it+1)
+        plt.imshow(I_SPNoise)
+        plt.show()
 
-cv2.waitKey()
+    elif choice in ['ga', 'gaussian', 'GA']:
+        Is = []
+        plt.title("Gaussian")
+        for i in range(it):
+            I_copy = I.copy()
+            I_GNoise = GaussianNoise(I_copy, mean, SD)
+            I_GNoise = cv2.cvtColor(I_GNoise, cv2.COLOR_BGR2RGB)
+            plt.subplot(2, it, i+1)
+            plt.imshow(I_GNoise)
+            Is.append(I_GNoise)
+            del I_copy
+        I_Avg = ImgAverage(Is)
+        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
+        plt.subplot(2, it, it+1)
+        plt.imshow(I_GNoise)
+        plt.show()
+
+    elif choice in ['s', 'speckle', 'S']:
+        Is = []
+        plt.title("Speckle")
+        for i in range(it):
+            I_copy = I.copy()
+            I_SNoise = SpeckleNoise(I_copy)
+            I_SNoise = cv2.cvtColor(I_SNoise, cv2.COLOR_BGR2RGB)
+            plt.subplot(2, it, i+1)
+            plt.imshow(I_SNoise)
+            Is.append(I_SNoise)
+            del I_copy
+        I_Avg = ImgAverage(Is)
+        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
+        plt.subplot(2, it, it+1)
+        plt.imshow(I_SNoise)
+        plt.show()
+    else:
+        break
+    cv2.waitKey()
 
