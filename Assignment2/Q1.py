@@ -102,6 +102,11 @@ def ImgAverage(Is):
             Is[imgindex] = Is[imgindex].astype(int)
             AvgI = (cv2.add(AvgI, Is[imgindex]) / len(Is)).astype(int)
     AvgI = AvgI.astype(np.uint8)
+    # print("AVG")
+    # print(AvgI)
+    # print("\n\n\n\n\n\n\n\n\n\n")
+    # print("Is[-1]")
+    # print(Is[-1])
     return AvgI
 
     
@@ -112,9 +117,10 @@ imgpath = 'E:/Github Codes and Projects/ImageProcessing_Files/Assignment2/LenaIm
 I = cv2.imread(imgpath)
 
 it = 3
-prob = 0.1
+prob = 0.05
 mean = 100
 SD = 50
+maximginrow = 4
 
 while True:
 
@@ -130,53 +136,65 @@ while True:
         cv2.imshow("I_APP", I_app)
 
     elif choice in ['sp', 'saltandpepper', 'SP']:
+        it = int(input("Enter no of images to apply noise: "))
+        prob = float(input("Enter prob: "))
+        nrows = 2 + int(round(it / maximginrow))
         Is = []
         plt.title("Salt and Pepper")
         for i in range(it):
             I_copy = I.copy()
             I_SPNoise = SaltPepperNoise(I_copy, prob)
             I_SPNoise = cv2.cvtColor(I_SPNoise, cv2.COLOR_BGR2RGB)
-            plt.subplot(2, it, i+1)
+            plt.subplot(nrows, maximginrow, i+1)
             plt.imshow(I_SPNoise)
             Is.append(I_SPNoise)
             del I_copy
         I_Avg = ImgAverage(Is)
         I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
-        plt.subplot(2, it, it+1)
+        ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
+        ax.title.set_text('Avg')
         plt.imshow(I_SPNoise)
         plt.show()
 
     elif choice in ['ga', 'gaussian', 'GA']:
+        it = int(input("Enter no of images to apply noise: "))
+        mean = int(input("Enter mean: "))
+        SD = int(input("Enter SD: "))
+        nrows = 1 + int(round(it / maximginrow))
         Is = []
         plt.title("Gaussian")
         for i in range(it):
             I_copy = I.copy()
             I_GNoise = GaussianNoise(I_copy, mean, SD)
-            I_GNoise = cv2.cvtColor(I_GNoise, cv2.COLOR_BGR2RGB)
-            plt.subplot(2, it, i+1)
+            #I_GNoise = cv2.cvtColor(I_GNoise, cv2.COLOR_BGR2RGB)
+            plt.subplot(nrows, maximginrow, i+1)
             plt.imshow(I_GNoise)
             Is.append(I_GNoise)
             del I_copy
         I_Avg = ImgAverage(Is)
         I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
-        plt.subplot(2, it, it+1)
+        ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
+        ax.title.set_text('Avg')
         plt.imshow(I_GNoise)
         plt.show()
 
     elif choice in ['s', 'speckle', 'S']:
+        it = int(input("Enter no of images to apply noise: "))
+        nrows = 1 + int(round(it / maximginrow))
         Is = []
         plt.title("Speckle")
         for i in range(it):
             I_copy = I.copy()
             I_SNoise = SpeckleNoise(I_copy)
             I_SNoise = cv2.cvtColor(I_SNoise, cv2.COLOR_BGR2RGB)
-            plt.subplot(2, it, i+1)
+            plt.subplot(nrows, maximginrow, i+1)
             plt.imshow(I_SNoise)
             Is.append(I_SNoise)
             del I_copy
         I_Avg = ImgAverage(Is)
         I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
-        plt.subplot(2, it, it+1)
+        ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
+        ax.title.set_text('Avg')
         plt.imshow(I_SNoise)
         plt.show()
     else:
