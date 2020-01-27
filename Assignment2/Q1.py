@@ -18,7 +18,7 @@ def rgb2gray(I):
 
 def SaltPepperNoise(I, prob):
     max = 255
-    I_g = I
+    I_g = I.copy()
     probpercent = int(prob*100)
     # Greyscale
     if I_g.ndim == 2:
@@ -46,10 +46,11 @@ def SaltPepperNoise(I, prob):
                         I_g[i, j, 0] = 0 # Pepper
                         I_g[i, j, 1] = 0 # Pepper
                         I_g[i, j, 2] = 0 # Pepper
+    I_g = I_g.astype(np.uint8)
     return I_g
 
 def GaussianNoise(I, mean, variance):
-    I_g = I
+    I_g = I.astype(int).copy()
 
     SD = variance ** 0.5
     # Greyscale
@@ -57,70 +58,78 @@ def GaussianNoise(I, mean, variance):
         rows, pixs = I_g.shape
         noise = np.random.normal(mean, SD, (rows, pixs))
         noise = noise.reshape(rows, pixs)
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                I_g[i, j] = I_g[i, j] + int(noise[i, j])
+        I_g = np.add(I_g, noise.astype(int))
+        # for i in range(I_g.shape[0]):
+        #     for j in range(I_g.shape[1]):
+        #         I_g[i, j] = I_g[i, j] + int(noise[i, j])
     # RGB
     elif I_g.ndim == 3:
         rows, pixs, channels = I_g.shape
         noise = np.random.normal(mean, SD, (rows, pixs, channels))
         noise = noise.reshape(rows, pixs, channels)
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                I_g[i, j, 0] = I_g[i, j, 0] + int(noise[i, j, 0])
-                I_g[i, j, 1] = I_g[i, j, 1] + int(noise[i, j, 2])
-                I_g[i, j, 2] = I_g[i, j, 1] + int(noise[i, j, 2])
+        I_g = np.add(I_g, noise.astype(int))
+        # for i in range(I_g.shape[0]):
+        #     for j in range(I_g.shape[1]):
+        #         I_g[i, j, 0] = I_g[i, j, 0] + int(noise[i, j, 0])
+        #         I_g[i, j, 1] = I_g[i, j, 1] + int(noise[i, j, 2])
+        #         I_g[i, j, 2] = I_g[i, j, 1] + int(noise[i, j, 2])
+    I_g = I_g.astype(np.uint8)
     return I_g
 
 def SpeckleNoise(I):
-    I_g = I
+    I_g = I.astype(int).copy()
 
     # Greyscale
     if I_g.ndim == 2:
         rows, pixs = I_g.shape
         noise = np.random.randn(rows, pixs)
         noise = noise.reshape(rows, pixs)
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                I_g[i, j] = I_g[i, j] +  int(I_g[i, j] * noise[i, j])
+        I_g = np.add(I_g, np.multiply(I_g, noise).astype(int))
+        # for i in range(I_g.shape[0]):
+        #     for j in range(I_g.shape[1]):
+        #         I_g[i, j] = I_g[i, j] +  int(I_g[i, j] * noise[i, j])
     # RGB
     elif I_g.ndim == 3:
         rows, pixs, channels = I_g.shape
         noise = np.random.randn(rows, pixs, channels)
         noise = noise.reshape(rows, pixs, channels)
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                I_g[i, j, 0] = I_g[i, j, 0] + int(I_g[i, j, 0] * noise[i, j, 0])
-                I_g[i, j, 1] = I_g[i, j, 1] + int(I_g[i, j, 1] * noise[i, j, 2])
-                I_g[i, j, 2] = I_g[i, j, 1] + int(I_g[i, j, 2] * noise[i, j, 2])
+        I_g = np.add(I_g, np.multiply(I_g, noise).astype(int))
+        # for i in range(I_g.shape[0]):
+        #     for j in range(I_g.shape[1]):
+        #         I_g[i, j, 0] = I_g[i, j, 0] + int(I_g[i, j, 0] * noise[i, j, 0])
+        #         I_g[i, j, 1] = I_g[i, j, 1] + int(I_g[i, j, 1] * noise[i, j, 2])
+        #         I_g[i, j, 2] = I_g[i, j, 1] + int(I_g[i, j, 2] * noise[i, j, 2])
+    I_g = I_g.astype(np.uint8)
     return I_g
 
 def ImgAverage(Is):
-    AvgI = Is[0].astype(int)
+    AvgI = Is[0].copy().astype(int)
     for imgindex in range(len(Is)):
         if imgindex != 0:
             Is[imgindex] = Is[imgindex].astype(int)
-            AvgI = (cv2.add(AvgI, Is[imgindex]) / len(Is)).astype(int)
+            AvgI = np.add(AvgI, Is[imgindex])
+    AvgI = np.divide(AvgI, len(Is)).astype(int)
     AvgI = AvgI.astype(np.uint8)
-    # print("AVG")
-    # print(AvgI)
-    # print("\n\n\n\n\n\n\n\n\n\n")
-    # print("Is[-1]")
-    # print(Is[-1])
     return AvgI
 
     
 
 # Code
 # Read and Display Lena Image
+plt.figure(figsize=(20,20))
+
 imgpath = 'E:/Github Codes and Projects/ImageProcessing_Files/Assignment2/LenaImage.png'
 I = cv2.imread(imgpath)
 
+grayimg = (input("Conv to GreyScale and apply noise? ") in ['y', 'Y', 'YES', 'yes'])
+if grayimg:
+    I = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
+
 it = 3
 prob = 0.05
-mean = 100
-SD = 50
-maximginrow = 4
+mean = 100.0
+SD = 50.0
+maximginrow = 5
 
 while True:
 
@@ -142,40 +151,46 @@ while True:
         Is = []
         plt.title("Salt and Pepper")
         for i in range(it):
-            I_copy = I.copy()
-            I_SPNoise = SaltPepperNoise(I_copy, prob)
-            I_SPNoise = cv2.cvtColor(I_SPNoise, cv2.COLOR_BGR2RGB)
+            I_SPNoise = SaltPepperNoise(I, prob)
             plt.subplot(nrows, maximginrow, i+1)
-            plt.imshow(I_SPNoise)
+            if not grayimg:
+                I_SPNoise = cv2.cvtColor(I_SPNoise, cv2.COLOR_BGR2RGB)
+                plt.imshow(I_SPNoise)
+            else:
+                plt.imshow(I_SPNoise, 'gray')
             Is.append(I_SPNoise)
-            del I_copy
         I_Avg = ImgAverage(Is)
-        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
         ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
         ax.title.set_text('Avg')
-        plt.imshow(I_SPNoise)
+        if not grayimg:
+            plt.imshow(I_Avg)
+        else:
+            plt.imshow(I_Avg, 'gray')
         plt.show()
 
     elif choice in ['ga', 'gaussian', 'GA']:
         it = int(input("Enter no of images to apply noise: "))
-        mean = int(input("Enter mean: "))
-        SD = int(input("Enter SD: "))
+        mean = float(input("Enter mean: "))
+        SD = float(input("Enter SD: "))
         nrows = 1 + int(round(it / maximginrow))
         Is = []
         plt.title("Gaussian")
         for i in range(it):
-            I_copy = I.copy()
-            I_GNoise = GaussianNoise(I_copy, mean, SD)
-            #I_GNoise = cv2.cvtColor(I_GNoise, cv2.COLOR_BGR2RGB)
+            I_GNoise = GaussianNoise(I, mean, SD)
             plt.subplot(nrows, maximginrow, i+1)
-            plt.imshow(I_GNoise)
+            if not grayimg:
+                I_GNoise = cv2.cvtColor(I_GNoise, cv2.COLOR_BGR2RGB)
+                plt.imshow(I_GNoise)
+            else:
+                plt.imshow(I_GNoise, 'gray')
             Is.append(I_GNoise)
-            del I_copy
         I_Avg = ImgAverage(Is)
-        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
         ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
         ax.title.set_text('Avg')
-        plt.imshow(I_GNoise)
+        if not grayimg:
+            plt.imshow(I_Avg)
+        else:
+            plt.imshow(I_Avg, 'gray')
         plt.show()
 
     elif choice in ['s', 'speckle', 'S']:
@@ -184,18 +199,21 @@ while True:
         Is = []
         plt.title("Speckle")
         for i in range(it):
-            I_copy = I.copy()
-            I_SNoise = SpeckleNoise(I_copy)
-            I_SNoise = cv2.cvtColor(I_SNoise, cv2.COLOR_BGR2RGB)
+            I_SNoise = SpeckleNoise(I)
             plt.subplot(nrows, maximginrow, i+1)
-            plt.imshow(I_SNoise)
+            if not grayimg:
+                I_SNoise = cv2.cvtColor(I_SNoise, cv2.COLOR_BGR2RGB)
+                plt.imshow(I_SNoise)
+            else:
+                plt.imshow(I_SNoise, 'gray')
             Is.append(I_SNoise)
-            del I_copy
         I_Avg = ImgAverage(Is)
-        I_Avg = cv2.cvtColor(I_Avg, cv2.COLOR_BGR2RGB)
         ax = plt.subplot(nrows, maximginrow, (nrows-1)*maximginrow + 1)
         ax.title.set_text('Avg')
-        plt.imshow(I_SNoise)
+        if not grayimg:
+            plt.imshow(I_Avg)
+        else:
+            plt.imshow(I_Avg, 'gray')
         plt.show()
     else:
         break
