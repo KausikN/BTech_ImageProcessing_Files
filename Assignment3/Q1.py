@@ -52,7 +52,13 @@ def BillinearInterpolation(Image, Scale=(2, 2)):
 # Driver Code
 inputImgPath = 'Assignment3/LenaImage.png'
 I = cv2.imread(inputImgPath, 0)
-Scale = (10, 10)
+Scale = (2, 2)
 ScaledImg = BillinearInterpolation(I, Scale)
+ScaledImg_cv2 = cv2.resize(I, (int(round(I.shape[0]*Scale[0])), int(round(I.shape[1]*Scale[1]))), interpolation=cv2.INTER_LINEAR)
+ax = plt.subplot(1, 2, 1)
+ax.title.set_text('CV2 Scaling')
+plt.imshow(ScaledImg_cv2, 'gray')
+ax = plt.subplot(1, 2, 2)
+ax.title.set_text('Implementation')
 plt.imshow(ScaledImg, 'gray')
 plt.show()

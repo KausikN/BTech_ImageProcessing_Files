@@ -17,7 +17,7 @@ def HistogramMatching(I_input, I_ref, pixelRange=(0, 255)):
 
     ProcessedDist = []
     noMapCheck = True
-    for hv in HistVals_input:
+    for hv in tqdm(HistVals_input):
         if len(Hist2PixVals_ref[hv - pixelRange[0]]) > 0:
             randindex = random.randint(0, len(Hist2PixVals_ref[hv - pixelRange[0]])-1)
             ProcessedDist.append(Hist2PixVals_ref[hv - pixelRange[0]][randindex])
@@ -84,7 +84,7 @@ def GetFreqDist(Image, pixelRange=(0, 255)):
     Freq = []
     for i in range(pixelRange[0], pixelRange[1]+1):
         Freq.append(0)
-    for row in Image:
+    for row in tqdm(Image):
         for pixel in row:
             Freq[pixel - pixelRange[0]] += 1
     return Freq
@@ -104,7 +104,7 @@ def HistPlot(Data, nbins=25):
 
 def ImagePixelReplace(Image, pixelReplaceVals):
     I = np.zeros(Image.shape)
-    for i in range(Image.shape[0]):
+    for i in tqdm(range(Image.shape[0])):
         for j in range(Image.shape[1]):
             I[i, j] = pixelReplaceVals[Image[i, j]]
     return I
@@ -112,6 +112,7 @@ def ImagePixelReplace(Image, pixelReplaceVals):
 '''
 # Driver Code - 3
 imgPath = 'Assignment3/pout-dark.jpg'
+# imgPath = 'Assignment3/Curtain_Dark.jpg'
 I = cv2.imread(imgPath, 0)
 HistVals, HistProbDist, Hist2PixVals = HistogramEqualisation(I)
 
@@ -119,10 +120,10 @@ plt.subplot(2, 2, 1)
 plt.imshow(I, 'gray')
 plt.subplot(2, 2, 2)
 plt.imshow(ImagePixelReplace(I, HistVals), 'gray')
-plt.subplot(2, 2, 3)
-HistPlot(HistVals)
-plt.subplot(2, 2, 4)
-HistPlot(HistProbDist)
+# plt.subplot(2, 2, 3)
+# HistPlot(HistVals)
+# plt.subplot(2, 2, 4)
+# HistPlot(HistProbDist)
 plt.show()
 
 print("HistVals:", HistVals)
@@ -132,6 +133,8 @@ print("HistProbDist:", HistProbDist)
 # Driver Code - 4
 imgPath_input = 'Assignment3/pout-dark.jpg'
 imgPath_ref = 'Assignment3/pout-bright.jpg'
+# imgPath_input = 'Assignment3/Curtain_Dark.jpg'
+# imgPath_ref = 'Assignment3/pout-bright.jpg'
 I_input = cv2.imread(imgPath_input, 0)
 I_ref = cv2.imread(imgPath_ref, 0)
 
@@ -147,10 +150,13 @@ ax.title.set_text('Input')
 ax = plt.subplot(2, 3, 3)
 plt.imshow(I_processed, 'gray')
 ax.title.set_text('HistMatched')
-ax = plt.subplot(2, 3, 4)
-HistPlot(ProcessedDist)
-ax.title.set_text('HistMatchMap')
-ax = plt.subplot(2, 3, 5)
-HistPlot(ProbDist_processed)
-ax.title.set_text('HistMatchProb')
+# ax = plt.subplot(2, 3, 4)
+# HistPlot(ProcessedDist)
+# ax.title.set_text('HistMatchMap')
+# ax = plt.subplot(2, 3, 5)
+# HistPlot(ProbDist_processed)
+# ax.title.set_text('HistMatchProb')
+
+# print("ProcessedDist:", ProcessedDist)
+# print("ProbDist_processed:", ProbDist_processed)
 plt.show()
