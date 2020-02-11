@@ -21,31 +21,19 @@ def SaltPepperNoise(I, prob):
     I_g = I.copy()
     probpercent = int(prob*100)
     # Greyscale
-    if I_g.ndim == 2:
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                r = random.randrange(1, 100)
-                #r = random.randint(1, 100)
-                if r <= probpercent:
-                    if r <= int(probpercent / 2):
-                        I_g[i, j] = max # Salt
-                    else:
-                        I_g[i, j] = 0 # Pepper
-    # RGB
-    elif I_g.ndim == 3:
-        for i in range(I_g.shape[0]):
-            for j in range(I_g.shape[1]):
-                r = random.randrange(1, 100)
-                #r = random.randint(1, 100)
-                if r <= probpercent:
-                    if r <= int(probpercent / 2):
-                        I_g[i, j, 0] = max # Salt
-                        I_g[i, j, 1] = max # Salt
-                        I_g[i, j, 2] = max # Salt
-                    else:
-                        I_g[i, j, 0] = 0 # Pepper
-                        I_g[i, j, 1] = 0 # Pepper
-                        I_g[i, j, 2] = 0 # Pepper
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1], 1))
+    for i in range(I_g.shape[0]):
+        for j in range(I_g.shape[1]):
+            r = random.randrange(1, 100)
+            #r = random.randint(1, 100)
+            if r <= probpercent:
+                if r <= int(probpercent / 2):
+                    I_g[i, j, :] = np.ones(I_g.shape[2]) * max # Salt
+                else:
+                    I_g[i, j] = np.ones(I_g.shape[2]) * 0 # Pepper
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1]))
     I_g = I_g.astype(np.uint8)
     return I_g
 
@@ -53,52 +41,35 @@ def GaussianNoise(I, mean, variance):
     I_g = I.astype(int).copy()
 
     SD = variance ** 0.5
-    # Greyscale
-    if I_g.ndim == 2:
-        rows, pixs = I_g.shape
-        noise = np.random.normal(mean, SD, (rows, pixs))
-        noise = noise.reshape(rows, pixs)
-        I_g = np.add(I_g, noise.astype(int))
-        # for i in range(I_g.shape[0]):
-        #     for j in range(I_g.shape[1]):
-        #         I_g[i, j] = I_g[i, j] + int(noise[i, j])
-    # RGB
-    elif I_g.ndim == 3:
-        rows, pixs, channels = I_g.shape
-        noise = np.random.normal(mean, SD, (rows, pixs, channels))
-        noise = noise.reshape(rows, pixs, channels)
-        I_g = np.add(I_g, noise.astype(int))
-        # for i in range(I_g.shape[0]):
-        #     for j in range(I_g.shape[1]):
-        #         I_g[i, j, 0] = I_g[i, j, 0] + int(noise[i, j, 0])
-        #         I_g[i, j, 1] = I_g[i, j, 1] + int(noise[i, j, 2])
-        #         I_g[i, j, 2] = I_g[i, j, 1] + int(noise[i, j, 2])
+
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1], 1))
+
+    rows, pixs, channels = I_g.shape
+    noise = np.random.normal(mean, SD, (rows, pixs, channels))
+    noise = noise.reshape(rows, pixs, channels)
+    I_g = np.add(I_g, noise.astype(int))
+
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1]))
+
     I_g = I_g.astype(np.uint8)
     return I_g
 
 def SpeckleNoise(I):
     I_g = I.astype(int).copy()
 
-    # Greyscale
-    if I_g.ndim == 2:
-        rows, pixs = I_g.shape
-        noise = np.random.randn(rows, pixs)
-        noise = noise.reshape(rows, pixs)
-        I_g = np.add(I_g, np.multiply(I_g, noise).astype(int))
-        # for i in range(I_g.shape[0]):
-        #     for j in range(I_g.shape[1]):
-        #         I_g[i, j] = I_g[i, j] +  int(I_g[i, j] * noise[i, j])
-    # RGB
-    elif I_g.ndim == 3:
-        rows, pixs, channels = I_g.shape
-        noise = np.random.randn(rows, pixs, channels)
-        noise = noise.reshape(rows, pixs, channels)
-        I_g = np.add(I_g, np.multiply(I_g, noise).astype(int))
-        # for i in range(I_g.shape[0]):
-        #     for j in range(I_g.shape[1]):
-        #         I_g[i, j, 0] = I_g[i, j, 0] + int(I_g[i, j, 0] * noise[i, j, 0])
-        #         I_g[i, j, 1] = I_g[i, j, 1] + int(I_g[i, j, 1] * noise[i, j, 2])
-        #         I_g[i, j, 2] = I_g[i, j, 1] + int(I_g[i, j, 2] * noise[i, j, 2])
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1], 1))
+
+    rows, pixs, channels = I_g.shape
+    noise = np.random.randn(rows, pixs, channels)
+    noise = noise.reshape(rows, pixs, channels)
+    I_g = np.add(I_g, np.multiply(I_g, noise).astype(int))
+
+    if I.ndim == 2:
+        I_g = np.reshape(I_g, (I_g.shape[0], I_g.shape[1]))
+
     I_g = I_g.astype(np.uint8)
     return I_g
 
