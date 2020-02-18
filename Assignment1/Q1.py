@@ -9,8 +9,8 @@
     v.   frequency distribution
 '''
 
-# Creates a matrix with user input
 def CreateMatrix_UserInput(matrixSize):
+    ''' Creates a matrix with user input '''
     matrix = []
 
     for i in range(matrixSize[0]):
@@ -65,7 +65,12 @@ def MatMedian(matrix):
     for row in matrix:
         for val in row:
             arr.append(val)
-    BubbleSort(arr)
+    # Bubble Sort Code
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1] :
+                arr[j], arr[j+1] = arr[j+1], arr[j]
 
     if len(arr) % 2 == 1:
         return arr[int((len(arr) - 1)/2)]
@@ -98,20 +103,7 @@ def MatStandardDeviation(matrix):
     return SD
 
 
-def BubbleSort(arr):
-    n = len(arr)
- 
-    # Traverse through all array elements
-    for i in range(n):
- 
-        # Last i elements are already in place
-        for j in range(0, n-i-1):
- 
-            # traverse the array from 0 to n-i-1
-            # Swap if the element found is greater
-            # than the next element
-            if arr[j] > arr[j+1] :
-                arr[j], arr[j+1] = arr[j+1], arr[j]
+
 
 
 # Driver Code
