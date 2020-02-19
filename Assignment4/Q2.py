@@ -80,7 +80,7 @@ def Correlation(I, W, stride=(1, 1)):
         I_padded = np.reshape(I_padded, (I_padded.shape[0], I_padded.shape[1]))
         W = np.reshape(W, (W.shape[0], W.shape[1]))
     return I_g, I_padded
-
+    
 def BoundingBox(Image, pos, window_size, radius=1, color=[0, 0, 0]):
     I = Image.copy()
     window_size = [window_size[0], window_size[1]]
@@ -138,7 +138,6 @@ def NormaliseToRange(I, Range=(0, 255)):
 # Driver Code
 main_path = 'Assignment4'
 nCols = 6
-A
 img_path = os.path.join(main_path, 'hdraw.png')
 subimgs_names = ['0']#, '1', '2', '3', '4', '5', '6', '7', '9']
 nOps = 3
