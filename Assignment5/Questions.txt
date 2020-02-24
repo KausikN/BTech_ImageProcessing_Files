@@ -1,0 +1,5 @@
+1. Write a function to implement FFT for 1D signal.
+2. Implement DFT function for an image using the FFT for 1D signal using q1.
+3. Consider the images of lena and dog images attached. Find phase and magnitude of the dog and lena images using DFT function implemented in q2.
+4. Swap phase of the dog image and magnitude of the lena image and display the output.
+5. Swap phase of the lena image and magnitude of the dog image ad display the output.
