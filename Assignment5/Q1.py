@@ -88,18 +88,17 @@ def GetPhase(compVal):
     return np.angle(compVal)
 
 # Driver Code
-# 1
-# Implemented FFT
-
 # 2
 # Read Lena Image
 imgPath = 'Assignment5/Lena.png'
 I = cv2.imread(imgPath, 0)
-#I = np.array([[1, 2, 3, 4]])
 print(I.shape)
+
+# Find FFT
+print("Finding FFT...")
 I_FFT = FFT_2D(I)
 
-print("FFT", I_FFT)
+print("FFT:\n", I_FFT)
 
 # 3
 # Get Magnitude and Phase
@@ -107,10 +106,18 @@ print("Converting to Polar Coor...")
 I_Mag, I_Phase = Conv2Polar(I_FFT)
 I_FFT_Cart = Conv2Cartesian(I_Mag, I_Phase)
 
-print("Mag:", I_Mag)
-print("Phase:", I_Phase)
+print("Mag:\n", I_Mag)
+print("Phase:\n", I_Phase)
 
-I_FFT = IFFT_2D(I_FFT)
+I_IFFT = IFFT_2D(I_FFT)
 
+ax = plt.subplot(2, 2, 1)
+ax.title.set_text('Image')
+plt.imshow(I, 'gray')
+ax = plt.subplot(2, 2, 3)
+ax.title.set_text('FFT')
 plt.imshow(I_FFT.astype(np.uint8), 'gray')
+ax = plt.subplot(2, 2, 4)
+ax.title.set_text('IFFT')
+plt.imshow(I_IFFT, 'gray')
 plt.show()

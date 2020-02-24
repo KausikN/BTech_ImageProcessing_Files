@@ -93,19 +93,25 @@ lenaPath = 'Assignment5/Lena.png'
 dogI = cv2.imread(dogPath, 0)
 LenaI = cv2.imread(lenaPath, 0)
 
-print(dogI.shape)
-print(LenaI.shape)
+print("Dog:", dogI.shape)
+print("Lena:", LenaI.shape)
 
 # Get Mags and Phases
+print("Dog FFT...")
 dogI_FFT = FFT_2D(dogI)
+print("Dog Conv 2 Polar...")
 dogI_Mag, dogI_Phase = Conv2Polar(dogI_FFT)
 
+print("Lena FFT...")
 LenaI_FFT = FFT_2D(LenaI)
+print("Lena Conv 2 Polar...")
 LenaI_Mag, LenaI_Phase = Conv2Polar(LenaI_FFT)
 
+print("Cartesian Switching...")
 dogMagLenaPhase = Conv2Cartesian(dogI_Mag, LenaI_Phase)
 LenaMagdogPhase = Conv2Cartesian(LenaI_Mag, dogI_Phase)
 
+print("IFFT...")
 dogMagLenaPhase_I = IFFT_2D(dogMagLenaPhase)
 LenaMagdogPhase_I = IFFT_2D(LenaMagdogPhase)
 

@@ -16,7 +16,7 @@ def BillinearInterpolation(Image, Scale=(2, 2)):
 
     for i in range(Image.shape[0]):
         for j in range(Image.shape[1]):
-            if int(i % (1/Scale[0])) == 0 and int(j % Scale[1]) == 0:
+            if int(i % (1/Scale[0])) == 0 and int(j % (1/Scale[1])) == 0 and int(i % Scale[0]) == 0 and int(j % Scale[1]) == 0:
                 ScaledImg[int(i*Scale[0]), int(j*Scale[1])] = Image[i, j]
 
     # Fill Missing Spots
