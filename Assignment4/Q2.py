@@ -136,7 +136,7 @@ def NormaliseToRange(I, Range=(0, 255)):
 
 
 # Driver Code
-main_path = ''
+main_path = 'Assignment4'
 nCols = 6
 img_path = os.path.join(main_path, 'hdraw.png')
 subimgs_names = ['0']#, '1', '2', '3', '4', '5', '6', '7', '9']

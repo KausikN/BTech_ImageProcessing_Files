@@ -100,7 +100,7 @@ def ceil(a):
 # Driver Code
 
 # Read Lena Image and convert to Greyscale
-I = cv2.imread('./LenaImage.png', 0)
+I = cv2.imread('Assignment4/LenaImage.png', 0)
 
 # Get Salt and Peppered Images
 nCols = 6
