@@ -96,7 +96,10 @@ def ceil(a):
         return a + 1
     return a
 
+plt.imshow(ApplyMedianFilter(cv2.imread('C:/Users/Kausik N/Desktop/Kausik N Signature.jpg', 0), (15, 15)), 'gray')
+plt.show()
 
+"""
 # Driver Code
 
 # Read Lena Image and convert to Greyscale
@@ -142,3 +145,4 @@ for i in tqdm(range(probs.shape[0])):
 # ax = plt.subplot(1 + int(ceil(2*nNoisyImgs/nCols)) + 1, nCols, (1 + int(ceil(2*nNoisyImgs/nCols)))*nCols + 1)
 
 plt.show()
+"""
