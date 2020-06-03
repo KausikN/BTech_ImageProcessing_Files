@@ -290,14 +290,14 @@ def train_progressive_gan(
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--app', type=str, default=' ')
+    parser.add_argument('--app', type=str, default='gen')
     #------------------- training arguments -------------------
     parser.add_argument('--training_data_dir', type=str, default=' ') # The prepared training dataset directory that can be efficiently called by the code
     parser.add_argument('--out_model_dir', type=str, default=' ') # The output directory containing trained models, training configureation, training log, and training snapshots
     parser.add_argument('--training_seed', type=int, default=1000) # The random seed that differentiates training instances
     #------------------- image generation arguments -------------------
-    parser.add_argument('--model_path', type=str, default=' ') # The pre-trained GAN model
-    parser.add_argument('--out_image_dir', type=str, default=' ') # The outpupt directory containing generated images
+    parser.add_argument('--model_path', type=str, default='ProGAN/models/celeba_align_png_cropped.pkl') # The pre-trained GAN model
+    parser.add_argument('--out_image_dir', type=str, default='ProGAN/gen/celeba_align_png_cropped/') # The outpupt directory containing generated images
     parser.add_argument('--num_pngs', type=int, default=1) # The number of generated images
     parser.add_argument('--gen_seed', type=int, default=9999) # The random seed to differentiate generation instances
 

@@ -13,6 +13,9 @@ import imp
 import numpy as np
 from collections import OrderedDict
 import tensorflow as tf
+# import tensorflow.compat.v1 as tf
+
+# tf.disable_eager_execution()
 
 #----------------------------------------------------------------------------
 # Convenience.
@@ -54,7 +57,7 @@ def absolute_name_scope(scope): # Forcefully enter the specified name scope, ign
 
 def init_tf(config_dict=dict()):
     if tf.get_default_session() is None:
-        tf.set_random_seed(np.random.randint(1 << 31))
+        tensorflow.random.set_seed(np.random.randint(1 << 31))
         create_session(config_dict, force_as_default=True)
 
 #----------------------------------------------------------------------------
