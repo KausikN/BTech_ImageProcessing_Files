@@ -1,2 +1,4 @@
-Project/Dataset
-Project/Implementation
+__pycache__/
+
+models/
+Project/Codes/RealDataset/
